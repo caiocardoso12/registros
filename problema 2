@@ -1,0 +1,165 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct Ramal {
+    int numeroRamal;
+    int categoria;
+    string setor;
+    int edificio;
+    string sala;
+    string responsavelRamal;
+    string responsavelAteste;
+};
+
+bool validarNumeroRamal(int numero) {
+    return (numero >= 1000 && numero <= 2999);
+}
+
+bool validarCategoria(int categoria) {
+    return (categoria >= 0 && categoria <= 6);
+}
+
+bool validarEdificio(int edificio) {
+    return (edificio == 500 || edificio == 505);
+}
+
+bool validarSala(string sala) {
+    if (sala.length() != 3)
+        return false;
+    if (!isdigit(sala[0]) || !isdigit(sala[1]) || !isdigit(sala[2]))
+        return false;
+    return true;
+}
+
+vector<string> obterSetoresUnicos(const vector<Ramal>& ramais) {
+    vector<string> setoresUnicos;
+    for (const auto& ramal : ramais) {
+        if (find(setoresUnicos.begin(), setoresUnicos.end(), ramal.setor) == setoresUnicos.end()) {
+            setoresUnicos.push_back(ramal.setor);
+        }
+    }
+    return setoresUnicos;
+}
+
+int main() {
+    vector<Ramal> bancoDeDados;
+
+    // Cadastro de alguns ramais para exemplo
+    Ramal ramal1 = {1001, 1, "SETEL", 500, "101", "João", "Maria"};
+    Ramal ramal2 = {2002, 3, "DIBEN", 505, "202", "Ana", "Pedro"};
+    Ramal ramal3 = {1500, 5, "PATRIMÔNIO", 500, "303", "Carlos", "Laura"};
+
+    bancoDeDados.push_back(ramal1);
+    bancoDeDados.push_back(ramal2);
+    bancoDeDados.push_back(ramal3);
+
+    char continuar;
+
+    do {
+        cout << "\nEscolha o método de pesquisa:\n";
+        cout << "1. Pesquisar por número do ramal\n";
+        cout << "2. Pesquisar por categoria\n";
+        cout << "3. Pesquisar por setor\n";
+        cout << "4. Pesquisar por edifício\n";
+        cout << "5. Mostrar todos os ramais cadastrados\n";
+        cout << "Escolha a opção (1-5): ";
+
+        int opcao;
+        cin >> opcao;
+
+        cin.ignore();
+
+        switch (opcao) {
+            case 1: {
+                int numero;
+                cout << "Digite o número do ramal: ";
+                cin >> numero;
+
+                auto it = find_if(bancoDeDados.begin(), bancoDeDados.end(),
+                    [numero](const Ramal& r) { return r.numeroRamal == numero; });
+
+                if (it != bancoDeDados.end()) {
+                    cout << "\nRamal encontrado:\n";
+                    cout << "Número do ramal: " << it->numeroRamal << endl;
+                    cout << "Categoria: " << it->categoria << endl;
+                    cout << "Setor: " << it->setor << endl;
+                    cout << "Edifício: " << it->edificio << endl;
+                    cout << "Sala: " << it->sala << endl;
+                    cout << "Responsável pelo ramal: " << it->responsavelRamal << endl;
+                    cout << "Responsável pelo ateste: " << it->responsavelAteste << endl;
+                } else {
+                    cout << "Ramal não encontrado.\n";
+                }
+                break;
+            }
+            case 2: {
+                int categoria;
+                cout << "Digite a categoria do ramal (0-6): ";
+                cin >> categoria;
+
+                cout << "\nRamais encontrados com categoria " << categoria << ":\n";
+                for (const auto& ramal : bancoDeDados) {
+                    if (ramal.categoria == categoria) {
+                        cout << "Número do ramal: " << ramal.numeroRamal << ", Setor: " << ramal.setor << endl;
+                    }
+                }
+                break;
+            }
+            case 3: {
+                vector<string> setoresUnicos = obterSetoresUnicos(bancoDeDados);
+
+                cout << "\nSetores disponíveis para pesquisa:\n";
+                for (size_t i = 0; i < setoresUnicos.size(); ++i) {
+                    cout << i + 1 << ". " << setoresUnicos[i] << endl;
+                }
+
+                cout << "Escolha o setor pelo número: ";
+                int escolhaSetor;
+                cin >> escolhaSetor;
+
+                cout << "\nRamais encontrados no setor " << setoresUnicos[escolhaSetor - 1] << ":\n";
+                for (const auto& ramal : bancoDeDados) {
+                    if (ramal.setor == setoresUnicos[escolhaSetor - 1]) {
+                        cout << "Número do ramal: " << ramal.numeroRamal << endl;
+                    }
+                }
+                break;
+            }
+            case 4: {
+                int edificio;
+                cout << "Digite o edifício (500 ou 505): ";
+                cin >> edificio;
+
+                cout << "\nRamais encontrados no edifício " << edificio << ":\n";
+                for (const auto& ramal : bancoDeDados) {
+                    if (ramal.edificio == edificio) {
+                        cout << "Número do ramal: " << ramal.numeroRamal << ", Setor: " << ramal.setor << endl;
+                    }
+                }
+                break;
+            }
+            case 5: {
+                cout << "\nTodos os ramais cadastrados:\n";
+                for (const auto& ramal : bancoDeDados) {
+                    cout << "Número do ramal: " << ramal.numeroRamal << ", Setor: " << ramal.setor << endl;
+                }
+                break;
+            }
+            default:
+                cout << "Opção inválida. Escolha novamente.\n";
+                break;
+        }
+
+        cout << "\nDeseja fazer outra pesquisa? (S/N): ";
+        cin >> continuar;
+        cin.ignore();
+
+    } while (continuar == 'S' || continuar == 's');
+
+    cout << "Programa encerrado.\n";
+
+    return 0;
+}
