@@ -1,0 +1,100 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+
+struct Ramal {
+    int numeroRamal;
+    int categoria;
+    string setor;
+    int edificio;
+    string sala;
+    string responsavelRamal;
+    string responsavelAteste;
+};
+
+
+bool validarNumeroRamal(int numero) {
+    return (numero >= 1000 && numero <= 2999);
+}
+
+
+bool validarCategoria(int categoria) {
+    return (categoria >= 0 && categoria <= 6);
+}
+
+
+bool validarEdificio(int edificio) {
+    return (edificio == 500 || edificio == 505);
+}
+
+
+bool validarSala(string sala) {
+    
+    if (sala.length() != 3)
+        return false;
+    if (!isdigit(sala[0]) || !isdigit(sala[1]) || !isdigit(sala[2]))
+        return false;
+    return true;
+}
+
+
+int main() {
+    Ramal ramal;
+    char continuar;
+
+    do {
+        
+        cout << "Digite o número do ramal (entre 1000 e 2999): ";
+        cin >> ramal.numeroRamal;
+
+        cout << "Digite a categoria do ramal (0 a 6): ";
+        cin >> ramal.categoria;
+
+        cout << "Digite o setor do ramal: ";
+        cin.ignore(); 
+        getline(cin, ramal.setor);
+
+        cout << "Digite o edifício de localização (500 ou 505): ";
+        cin >> ramal.edificio;
+
+        cout << "Digite o número da sala (andar + dois dígitos): ";
+        cin >> ramal.sala;
+
+        cout << "Digite o responsável pelo ramal (primeiro nome): ";
+        cin.ignore(); 
+        getline(cin, ramal.responsavelRamal);
+
+        cout << "Digite o responsável pelo ateste da conta telefônica (primeiro nome): ";
+        getline(cin, ramal.responsavelAteste);
+
+       
+        if (!validarNumeroRamal(ramal.numeroRamal) || !validarCategoria(ramal.categoria) ||
+            !validarEdificio(ramal.edificio) || !validarSala(ramal.sala)) {
+            cout << "Erro: Dados inválidos! Verifique as instruções e tente novamente.\n";
+            continue; 
+        }
+
+        
+        cout << "\nResumo do cadastro do ramal:\n";
+        cout << "Número do ramal: " << ramal.numeroRamal << endl;
+        cout << "Categoria: " << ramal.categoria << endl;
+        cout << "Setor: " << ramal.setor << endl;
+        cout << "Edifício: " << ramal.edificio << endl;
+        cout << "Sala: " << ramal.sala << endl;
+        cout << "Responsável pelo ramal: " << ramal.responsavelRamal << endl;
+        cout << "Responsável pelo ateste: " << ramal.responsavelAteste << endl;
+
+        
+        cout << "\nDeseja cadastrar outro ramal? (S/N): ";
+        cin >> continuar;
+        cin.ignore(); // Limpar o buffer do teclado
+
+        cout << "\n---------------------------------------------\n";
+
+    } while (continuar == 'S' || continuar == 's');
+
+    cout << "Programa encerrado.\n";
+
+    return 0;
+}
